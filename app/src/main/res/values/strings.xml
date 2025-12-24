@@ -1,0 +1,88 @@
+<resources>
+    <string name="app_name">Opendash</string>
+    <string name="app_developer_name">KooduXA</string>
+
+    <!-- About Section -->
+    <string name="about_section_title">About</string>
+    <string name="about_app_button">About OpenDash</string>
+    <string name="about_app_button_subtitle">Read full application description</string>
+
+    <!-- This is the large note -->
+    <string name="app_description">OpenDash is an open-source dashcam application designed to provide high-quality video recording, loop recording, and seamless connectivity for driver safety.\n\nKey Features:\n• 4K Video Support\n• Auto-Connect via Wi-Fi\n• Loop Recording to save storage\n\nThank you for using our software. We are dedicated to open-source transparency and privacy.</string>
+
+    <string name="contact_us">Contact Us</string>
+    <string name="contact_subtitle">Report bugs or request features</string>
+    <string name="github_repo">GitHub Repository</string>
+    <string name="github_subtitle">Contribute to the source code</string>
+    <string name="version_title">Version</string>
+    <string name="version_subtitle">v1.0.0 (Beta)</string>
+    <string name="contact_email">contributors@opendash.app</string>
+    <string name="github_url">https://github.com/KooduXA/OpenDash</string>
+    <string name="close">Close</string>
+    <string name="settings_title">Settings</string>
+
+    <!-- Dashboard Screen Strings -->
+    <string name="dashboard_retry_button">Retry</string>
+    <string name="dashboard_not_connected">Not Connected</string>
+    <string name="dashboard_connect_to_camera_button">Connect to Camera</string>
+    <string name="dashboard_files_button">Files</string>
+    <string name="dashboard_settings_button">Settings</string>
+    <string name="dashboard_local_gallery_button">Local Gallery</string>
+    <string name="dashboard_reconnect_button">Reconnect</string>
+    <string name="dashboard_status_live">LIVE</string>
+    <string name="dashboard_status_scan">SCAN</string>
+    <string name="dashboard_status_error">ERR</string>
+    <string name="dashboard_status_idle">IDLE</string>
+    <string name="dashboard_recording_badge">REC</string>
+
+    <!-- Settings Screen Strings -->
+    <string name="settings_back_button_content_description">Back</string>
+    <string name="settings_section_video_recording">Video Recording</string>
+    <string name="settings_resolution_title">Resolution</string>
+    <string name="settings_loop_recording_title">Loop Recording</string>
+    <string name="settings_record_audio_title">Record Audio</string>
+    <string name="settings_section_connectivity">Connectivity</string>
+    <string name="settings_camera_wifi_title">Camera Wi-Fi</string>
+    <string name="settings_camera_wifi_subtitle_tap_to_edit"> (Tap to Edit)</string>
+    <string name="settings_auto_connect_title">Auto-Connect</string>
+    <string name="settings_auto_connect_subtitle">Automatically connect when app opens</string>
+    <string name="settings_section_system">System</string>
+    <string name="settings_reset_settings_title">Reset Settings</string>
+    <string name="settings_reset_settings_subtitle">Restore default configuration</string>
+    <string name="settings_dialog_select_resolution_title">Select Resolution</string>
+    <string name="settings_resolution_4k_30fps">4K 30fps</string>
+    <string name="settings_resolution_2k_60fps">2K 60fps</string>
+    <string name="settings_resolution_1080p_60fps">1080p 60fps</string>
+    <string name="settings_resolution_1080p_30fps">1080p 30fps</string>
+    <string name="settings_resolution_720p_30fps">720p 30fps</string>
+    <string name="dialog_cancel_button">Cancel</string>
+    <string name="settings_dialog_camera_wifi_setup_title">Camera Wi-Fi Setup</string>
+    <string name="settings_dialog_ssid_name_label">SSID Name</string>
+    <string name="settings_dialog_password_label">Password</string>
+    <string name="dialog_save_button">Save</string>
+    <string name="email_subject_opendash_inquiry">OpenDash Inquiry</string>
+
+<!--    &lt;!&ndash; File Browser Screen Strings &ndash;&gt;-->
+<!--    <string name="file_browser_back_button_content_description">Back</string>-->
+<!--    <string name="file_browser_camera_storage_title">Camera Storage</string>-->
+<!--    <string name="file_browser_switch_view_content_description">Switch View</string>-->
+<!--    <string name="file_browser_no_files_found">No files found or not connected.</string>-->
+<!--    <string name="file_browser_downloading_progress">Downloading… %1$d%%</string>-->
+<!--    <string name="file_browser_delete_file_dialog_title">Delete File?</string>-->
+<!--    <string name="file_browser_delete_file_dialog_message">Are you sure you want to delete '%s'?</string>-->
+<!--    <string name="file_browser_delete_button">Delete</string>-->
+<!--    <string name="file_browser_thumbnail_content_description">Thumbnail</string>-->
+<!--    <string name="file_browser_download_button_content_description">Download</string>-->
+<!--    <string name="file_browser_delete_button_content_description">Delete</string>-->
+
+    <!-- Local Gallery Screen Strings -->
+    <string name="local_gallery_downloaded_videos_title">Downloaded Videos</string>
+    <string name="local_gallery_no_downloads_yet">No downloads yet.</string>
+    <string name="local_gallery_mb_unit"> MB</string>
+
+    <!-- Remote Browser Wrapper Strings -->
+    <string name="remote_browser_download_complete">Download Complete</string>
+    <string name="remote_browser_download_failed">Download Failed: %s</string>
+    <string name="remote_browser_no_video_player_found">No Video Player Found</string>
+
+</resources>

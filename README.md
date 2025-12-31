@@ -1,4 +1,4 @@
-< kooduXA />
+< KooduXA />
 
 OpenDash is a telemetry free Android application built to talk to WiFi-enabled Novatek chipsets dashcams. 
 

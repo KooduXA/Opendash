@@ -2,6 +2,7 @@ package com.kooduXA.opendash.data.protocol
 
 import android.content.Context
 import com.kooduXA.opendash.data.debug.AppLogger
+import com.kooduXA.opendash.domain.model.CameraEndpoint
 import com.kooduXA.opendash.domain.model.CameraState
 import com.kooduXA.opendash.domain.model.StorageInfo
 import com.kooduXA.opendash.domain.model.VideoFile
@@ -31,6 +32,7 @@ class AppHttpProtocol(
 
     private var cameraIp: String = "192.168.169.1"
     private var appBasePath: List<String> = listOf("app")
+    private var liveStreamUrl: String? = null
 
     private val _connectionState = MutableStateFlow<CameraState>(CameraState.Disconnected)
     override val connectionState: StateFlow<CameraState> = _connectionState.asStateFlow()
@@ -53,6 +55,7 @@ class AppHttpProtocol(
 
     private val probeRequests = listOf(
         ProbeRequest("getdeviceattr"),
+        ProbeRequest("getproductinfo"),
         ProbeRequest("getparamitems", mapOf("param" to "all")),
         ProbeRequest("getparamvalue", mapOf("param" to "rec")),
         ProbeRequest("getsdinfo"),
@@ -60,8 +63,8 @@ class AppHttpProtocol(
         ProbeRequest("enterrecorder")
     )
 
-    override suspend fun canHandle(ipAddress: String): Boolean = withContext(Dispatchers.IO) {
-        val ip = ipAddress.trim()
+    override suspend fun canHandle(endpoint: CameraEndpoint): Boolean = withContext(Dispatchers.IO) {
+        val ip = endpoint.ip.trim()
         val discovered = discoverWorkingBasePath(ip)
 
         AppLogger.d(TAG, "canHandle ip=$ip -> basePath=${discovered?.joinToString("/")}")
@@ -69,10 +72,10 @@ class AppHttpProtocol(
         discovered != null
     }
 
-    override suspend fun connect(ipAddress: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun connect(endpoint: CameraEndpoint): Boolean = withContext(Dispatchers.IO) {
         heartbeatJob?.cancel()
 
-        cameraIp = ipAddress.trim()
+        cameraIp = endpoint.ip.trim()
         _connectionState.value = CameraState.Connecting
         AppLogger.i(TAG, "Connecting to camera at $cameraIp")
 
@@ -86,19 +89,23 @@ class AppHttpProtocol(
         appBasePath = discoveredBasePath
 
         val attr = sendAppCommand("getdeviceattr")
+        val productInfo = sendAppCommand("getproductinfo")
         val items = sendAppCommand("getparamitems", mapOf("param" to "all"))
         val rec = sendAppCommand("getparamvalue", mapOf("param" to "rec"))
         val sd = sendAppCommand("getsdinfo")
         val media = sendAppCommand("getmediainfo")
+        liveStreamUrl = parseRtspUrl(media)
         val enterRecorder = sendAppCommand("enterrecorder")
         val timeSync = syncTime()
 
         AppLogger.d(TAG, "Connected APP basePath=${appBasePath.joinToString("/")}")
         AppLogger.d(TAG, "getdeviceattr=$attr")
+        AppLogger.d(TAG, "getproductinfo=$productInfo")
         AppLogger.d(TAG, "getparamitems=$items")
         AppLogger.d(TAG, "getparamvalue(rec)=$rec")
         AppLogger.d(TAG, "getsdinfo=$sd")
         AppLogger.d(TAG, "getmediainfo=$media")
+        AppLogger.d(TAG, "parsed rtsp url=$liveStreamUrl")
         AppLogger.d(TAG, "enterrecorder=$enterRecorder")
         AppLogger.d(TAG, "setsystime=$timeSync")
 
@@ -116,7 +123,8 @@ class AppHttpProtocol(
     }
 
     override suspend fun getLiveStreamUrl(): String = withContext(Dispatchers.IO) {
-        listOf(
+        listOfNotNull(
+            liveStreamUrl,
             "rtsp://$cameraIp/liveRTSP/av4",
             "rtsp://$cameraIp/liveRTSP/av2",
             "rtsp://$cameraIp/liveRTSP/av1",
@@ -290,7 +298,11 @@ class AppHttpProtocol(
         path: String,
         query: Map<String, String> = emptyMap()
     ): String? {
-        val url = buildUrl(ip = cameraIp, basePath = appBasePath, path = path, query = query)
+        val effectiveQuery = query.toMutableMap()
+        if (path == "getparamvalue" || path == "setparamvalue") {
+            effectiveQuery.putIfAbsent("folder", "/mnt")
+        }
+        val url = buildUrl(ip = cameraIp, basePath = appBasePath, path = path, query = effectiveQuery)
         return simpleGet(url)
     }
 
@@ -388,6 +400,13 @@ class AppHttpProtocol(
             bytes >= kb -> String.format("%.2f KB", bytes / kb)
             else -> "$bytes B"
         }
+    }
+
+    private fun parseRtspUrl(raw: String?): String? {
+        if (raw.isNullOrBlank()) return null
+        val jsonUrl = Regex("""\"rtsp\"\s*:\s*\"([^\"]+)\"""").find(raw)?.groupValues?.getOrNull(1)
+        if (!jsonUrl.isNullOrBlank()) return jsonUrl
+        return Regex("(rtsp://[^\\s\"'}]+)").find(raw)?.groupValues?.getOrNull(1)
     }
 
     private data class ProbeRequest(

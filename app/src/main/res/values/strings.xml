@@ -112,6 +112,13 @@
     <string name="settings_dialog_password_label">Password</string>
     <string name="dialog_save_button">Save</string>
 
+    <string name="settings_connection_mode_title">Connection Mode</string>
+    <string name="settings_connection_mode_auto">Auto discovery</string>
+    <string name="settings_connection_mode_manual">Manual IP only</string>
+    <string name="settings_connection_mode_fallback">Auto + manual fallback</string>
+    <string name="settings_prefer_manual_first_title">Prefer manual IP first</string>
+    <string name="settings_prefer_manual_first_subtitle">Try manual IP before auto discovery</string>
+    <string name="settings_dialog_select_connection_mode_title">Select connection mode</string>
     <string name="settings_camera_ip_title">Camera IP / Gateway IP</string>
     <string name="settings_camera_ip_auto">Auto detect (recommended)</string>
     <string name="settings_camera_ip_hint">IP address</string>

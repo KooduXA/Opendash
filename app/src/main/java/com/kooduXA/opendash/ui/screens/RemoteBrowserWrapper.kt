@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.autoMirrored.Filled.ArrowBack
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -49,8 +49,8 @@ fun EnhancedRemoteBrowserWrapper(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                  Icon(
+                      imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
                     tint = Color.White
                 )

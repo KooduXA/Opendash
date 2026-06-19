@@ -2,6 +2,7 @@ package com.kooduXA.opendash.data.protocol
 
 import android.content.Context
 import android.util.Log
+import com.kooduXA.opendash.domain.model.CameraEndpoint
 import com.kooduXA.opendash.domain.model.CameraState
 import com.kooduXA.opendash.domain.model.StorageInfo
 import com.kooduXA.opendash.domain.model.VideoFile
@@ -60,14 +61,14 @@ class NovatekCgiProtocol(
         "action=dir&property=Normal&format=all&count=1&from=0"
     )
 
-    override suspend fun canHandle(ipAddress: String): Boolean = withContext(Dispatchers.IO) {
-        discoverWorkingBaseUrl(ipAddress) != null
+    override suspend fun canHandle(endpoint: CameraEndpoint): Boolean = withContext(Dispatchers.IO) {
+        discoverWorkingBaseUrl(endpoint.ip) != null
     }
 
-    override suspend fun connect(ipAddress: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun connect(endpoint: CameraEndpoint): Boolean = withContext(Dispatchers.IO) {
         heartbeatJob?.cancel()
         liveRtspUrl = null
-        cameraIp = ipAddress.trim()
+        cameraIp = endpoint.ip.trim()
 
         _connectionState.value = CameraState.Connecting
         Log.d(TAG, "Trying Novatek CGI on $cameraIp")

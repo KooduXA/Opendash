@@ -139,6 +139,18 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun updateConnectionMode(mode: com.kooduXA.opendash.domain.model.ConnectionMode) {
+        viewModelScope.launch {
+            repository.updateSettings(settings.value.copy(connectionMode = mode))
+        }
+    }
+
+    fun togglePreferManualFirst(enabled: Boolean) {
+        viewModelScope.launch {
+            repository.updateSettings(settings.value.copy(preferManualFirst = enabled))
+        }
+    }
+
     fun toggleDarkTheme(enabled: Boolean) {
         viewModelScope.launch {
             repository.updateSettings(settings.value.copy(nightMode = enabled))

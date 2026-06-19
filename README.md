@@ -15,3 +15,12 @@ Feel free to expand this project with your contributions.
 Fork it, star it, or just reach out if you have ideas.
 
 ![novatekWiFiDashcam](https://github.com/user-attachments/assets/a40e39c2-348e-4ef2-9805-4591dd278b72)
+
+## Sources
+
+This project adapts protocol details and endpoint translations from the following repositories:
+
+- Action-Cam-Hacking: https://github.com/lr-m/Action-Cam-Hacking
+- Opendash (original reference): https://github.com/rex2630/Opendash
+
+Icon: app icon is a custom, simple vector created for this project (free to use).

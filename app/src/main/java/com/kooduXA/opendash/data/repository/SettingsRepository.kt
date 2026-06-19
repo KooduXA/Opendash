@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.kooduXA.opendash.domain.model.ConnectionMode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -48,6 +49,8 @@ class SettingsRepository @Inject constructor(
         val WIFI_SSID = stringPreferencesKey("wifi_ssid")
         val WIFI_PASSWORD = stringPreferencesKey("wifi_password")
         val CAMERA_IP = stringPreferencesKey("camera_ip")
+        val CONNECTION_MODE = stringPreferencesKey("connection_mode")
+        val PREFER_MANUAL_FIRST = booleanPreferencesKey("prefer_manual_first")
         val HOTSPOT_MODE = booleanPreferencesKey("hotspot_mode")
         val HOTSPOT_SSID = stringPreferencesKey("hotspot_ssid")
         val HOTSPOT_PASSWORD = stringPreferencesKey("hotspot_password")
@@ -100,6 +103,8 @@ class SettingsRepository @Inject constructor(
         val wifiSSID: String = "OpenDash_Cam",
         val wifiPassword: String = "",
         val cameraIp: String = "",
+        val connectionMode: ConnectionMode = ConnectionMode.AUTO_DISCOVERY,
+        val preferManualFirst: Boolean = true,
         val hotspotMode: Boolean = false,
         val hotspotSSID: String = "OpenDash_Hotspot",
         val hotspotPassword: String = "opendash123",
@@ -153,6 +158,10 @@ class SettingsRepository @Inject constructor(
             wifiSSID = preferences[WIFI_SSID] ?: "OpenDash_Cam",
             wifiPassword = preferences[WIFI_PASSWORD] ?: "",
             cameraIp = preferences[CAMERA_IP] ?: "",
+            connectionMode = preferences[CONNECTION_MODE]?.let { modeValue ->
+                ConnectionMode.values().find { it.name == modeValue }
+            } ?: ConnectionMode.AUTO_DISCOVERY,
+            preferManualFirst = preferences[PREFER_MANUAL_FIRST] ?: true,
             hotspotMode = preferences[HOTSPOT_MODE] ?: false,
             hotspotSSID = preferences[HOTSPOT_SSID] ?: "OpenDash_Hotspot",
             hotspotPassword = preferences[HOTSPOT_PASSWORD] ?: "opendash123",
@@ -261,6 +270,8 @@ class SettingsRepository @Inject constructor(
             preferences[WIFI_SSID] = newSettings.wifiSSID
             preferences[WIFI_PASSWORD] = newSettings.wifiPassword
             preferences[CAMERA_IP] = newSettings.cameraIp
+            preferences[CONNECTION_MODE] = newSettings.connectionMode.name
+            preferences[PREFER_MANUAL_FIRST] = newSettings.preferManualFirst
             preferences[HOTSPOT_MODE] = newSettings.hotspotMode
             preferences[HOTSPOT_SSID] = newSettings.hotspotSSID
             preferences[HOTSPOT_PASSWORD] = newSettings.hotspotPassword

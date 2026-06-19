@@ -23,7 +23,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.autoMirrored.Filled.ArrowBack
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Description
@@ -82,6 +83,7 @@ fun SettingsScreen(
     val context = LocalContext.current
 
     var showResolutionDialog by remember { mutableStateOf(false) }
+    var showConnectionModeDialog by remember { mutableStateOf(false) }
     var showWifiDialog by remember { mutableStateOf(false) }
     var showAboutDialog by remember { mutableStateOf(false) }
     var showCameraIpDialog by remember { mutableStateOf(false) }
@@ -101,7 +103,7 @@ fun SettingsScreen(
         ) {
             IconButton(onClick = onBack) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                      imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.settings_back_button_content_description),
                     tint = Color.White
                 )
@@ -128,14 +130,14 @@ fun SettingsScreen(
                         subtitle = settings.videoResolution,
                         onClick = { showResolutionDialog = true }
                     )
-                    Divider(color = Color.DarkGray, thickness = 0.5.dp)
+                      HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
                     SwitchItem(
                         icon = Icons.Default.Loop,
                         title = stringResource(R.string.settings_loop_recording_title),
                         checked = settings.loopRecording,
                         onCheckedChange = { viewModel.toggleLoopRecording(it) }
                     )
-                    Divider(color = Color.DarkGray, thickness = 0.5.dp)
+                      HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
                     SwitchItem(
                         icon = Icons.Default.Mic,
                         title = stringResource(R.string.settings_record_audio_title),
@@ -154,7 +156,19 @@ fun SettingsScreen(
                         subtitle = settings.wifiSSID + stringResource(R.string.settings_camera_wifi_subtitle_tap_to_edit),
                         onClick = { showWifiDialog = true }
                     )
-                    Divider(color = Color.DarkGray, thickness = 0.5.dp)
+                      HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
+
+                    SettingsItem(
+                        icon = Icons.Default.Language,
+                        title = stringResource(R.string.settings_connection_mode_title),
+                        subtitle = when (settings.connectionMode) {
+                            com.kooduXA.opendash.domain.model.ConnectionMode.AUTO_DISCOVERY -> stringResource(R.string.settings_connection_mode_auto)
+                            com.kooduXA.opendash.domain.model.ConnectionMode.MANUAL_IP -> stringResource(R.string.settings_connection_mode_manual)
+                            com.kooduXA.opendash.domain.model.ConnectionMode.AUTO_WITH_MANUAL_FALLBACK -> stringResource(R.string.settings_connection_mode_fallback)
+                        },
+                        onClick = { showConnectionModeDialog = true }
+                    )
+                      HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
 
                     SettingsItem(
                         icon = Icons.Default.Language,
@@ -164,7 +178,18 @@ fun SettingsScreen(
                         },
                         onClick = { showCameraIpDialog = true }
                     )
-                    Divider(color = Color.DarkGray, thickness = 0.5.dp)
+                      HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
+
+                    if (settings.connectionMode == com.kooduXA.opendash.domain.model.ConnectionMode.AUTO_WITH_MANUAL_FALLBACK) {
+                        SwitchItem(
+                            icon = Icons.Default.Visibility,
+                            title = stringResource(R.string.settings_prefer_manual_first_title),
+                            subtitle = stringResource(R.string.settings_prefer_manual_first_subtitle),
+                            checked = settings.preferManualFirst,
+                            onCheckedChange = { viewModel.togglePreferManualFirst(it) }
+                        )
+                        HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
+                    }
 
                     SwitchItem(
                         icon = Icons.Default.WifiTethering,
@@ -213,7 +238,7 @@ fun SettingsScreen(
                         subtitle = stringResource(R.string.about_app_button_subtitle),
                         onClick = { showAboutDialog = true }
                     )
-                    Divider(color = Color.DarkGray, thickness = 0.5.dp)
+                    HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
 
                     val githubUrl = stringResource(R.string.github_url)
                     SettingsItem(
@@ -222,7 +247,7 @@ fun SettingsScreen(
                         subtitle = stringResource(R.string.github_subtitle),
                         onClick = { openUrl(context, githubUrl) }
                     )
-                    Divider(color = Color.DarkGray, thickness = 0.5.dp)
+                    HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
 
                     val emailAddress = stringResource(R.string.contact_email)
                     SettingsItem(
@@ -231,7 +256,7 @@ fun SettingsScreen(
                         subtitle = stringResource(R.string.contact_subtitle),
                         onClick = { sendEmail(context, emailAddress) }
                     )
-                    Divider(color = Color.DarkGray, thickness = 0.5.dp)
+                    HorizontalDivider(color = Color.DarkGray, thickness = 0.5.dp)
 
                     SettingsItem(
                         icon = Icons.Default.Info,
@@ -261,6 +286,17 @@ fun SettingsScreen(
                 showResolutionDialog = false
             },
             onDismiss = { showResolutionDialog = false }
+        )
+    }
+
+    if (showConnectionModeDialog) {
+        ConnectionModeSelectionDialog(
+            current = settings.connectionMode,
+            onSelect = {
+                viewModel.updateConnectionMode(it)
+                showConnectionModeDialog = false
+            },
+            onDismiss = { showConnectionModeDialog = false }
         )
     }
 
@@ -461,6 +497,52 @@ fun ResolutionSelectionDialog(
                         RadioButton(selected = option == current, onClick = null)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(option)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.dialog_cancel_button))
+            }
+        }
+    )
+}
+
+@Composable
+fun ConnectionModeSelectionDialog(
+    current: com.kooduXA.opendash.domain.model.ConnectionMode,
+    onSelect: (com.kooduXA.opendash.domain.model.ConnectionMode) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val options = listOf(
+        com.kooduXA.opendash.domain.model.ConnectionMode.AUTO_DISCOVERY,
+        com.kooduXA.opendash.domain.model.ConnectionMode.MANUAL_IP,
+        com.kooduXA.opendash.domain.model.ConnectionMode.AUTO_WITH_MANUAL_FALLBACK
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_dialog_select_connection_mode_title)) },
+        text = {
+            Column {
+                options.forEach { mode ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSelect(mode) }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(selected = mode == current, onClick = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = when (mode) {
+                                com.kooduXA.opendash.domain.model.ConnectionMode.AUTO_DISCOVERY -> stringResource(R.string.settings_connection_mode_auto)
+                                com.kooduXA.opendash.domain.model.ConnectionMode.MANUAL_IP -> stringResource(R.string.settings_connection_mode_manual)
+                                com.kooduXA.opendash.domain.model.ConnectionMode.AUTO_WITH_MANUAL_FALLBACK -> stringResource(R.string.settings_connection_mode_fallback)
+                            }
+                        )
                     }
                 }
             }

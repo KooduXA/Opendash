@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.autoMirrored.Filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -52,8 +53,8 @@ fun FileBrowserScreen(
                     .padding(bottom = 16.dp)
             ) {
                 IconButton(onClick = onClose) {
-                    Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
                 }
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.White)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     "Camera Storage",
